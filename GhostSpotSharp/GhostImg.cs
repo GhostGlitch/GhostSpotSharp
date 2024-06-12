@@ -8,7 +8,7 @@ using Windows.Storage.Streams;
 
 namespace GhostSpotSharp {
     internal class GhostImg {
-        public static async Task<Bitmap?> RefToImage(IRandomAccessStreamReference streamRef) {
+        public static async Task<Bitmap?> RefToThumb(IRandomAccessStreamReference streamRef) {
             Bitmap Img = Resources.ErrorThumb;
             if (streamRef != null) {
                 try {

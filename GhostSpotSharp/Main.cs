@@ -14,9 +14,9 @@ using Windows.ApplicationModel.Core;
 using GhostSpotSharp;
 
 TCSManager Manager = await TCSManager.RequestAsync();
-
 IReadOnlyList<TCS> Sessions = Manager.GetSessions();
 Dictionary<TCS, GhostProps> SeshMap = [];
+
 foreach (TCS sesh in Sessions) {
     GhostProps props = new();
     try {
@@ -27,26 +27,21 @@ foreach (TCS sesh in Sessions) {
         }).ConfigureAwait(false);
     }
     catch (Exception ex) {
-        Console.WriteLine(sesh.ToString());
         Console.WriteLine(ex.ToString());
     }
     SeshMap[sesh] = props;
 }
 foreach (GhostProps props in SeshMap.Values) {
-    Console.WriteLine(props);
-    Console.WriteLine(props.Title);
-    Console.WriteLine(props.Artist);
-    Console.WriteLine(props.Album);
-    Console.WriteLine(props.AlbumArtist);
-    foreach (string Genre in props.Genres) {
-        Console.WriteLine(Genre); }
-    Console.WriteLine(props.Thumbnail);
-
 #pragma warning disable CS8604 // Possible null reference argument.
     GhostImg.DebugViewImage(props.Thumbnail, props.Title);
 #pragma warning restore CS8604 // Possible null reference argument.
-    Console.WriteLine(props.TrackNumber);
-    Console.WriteLine(props.TrackCount);
-    Console.WriteLine(props.PlaybackType);
-    Console.WriteLine(props.Subtitle);
+    foreach (var kvp in props) {
+        if (kvp.Key == "Genres") {
+            List<string>? genres = (List<string>)kvp.Value;
+            Console.WriteLine($"Genres: {(genres.Count > 0 ? string.Join(", ", genres) : "")}");
+        } else if (kvp.Key != "Thumbnail") {
+            Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+        }
+    }
+    Console.WriteLine();
 }

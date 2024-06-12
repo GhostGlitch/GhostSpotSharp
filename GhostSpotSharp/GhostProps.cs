@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Media;
 using TCSProperties = Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties;
 
 namespace GhostSpotSharp {
-    internal class GhostProps {
+    internal class GhostProps : IEnumerable<KeyValuePair<string, object?>> {
 
         private string _title = "Unknown Title";
         public string? Title {
@@ -29,6 +31,7 @@ namespace GhostSpotSharp {
 
         public string? AlbumArtist { get; set; } = null;
         public List<string> Genres { get; set; } = [];
+
         private Bitmap _thumbnail = Resources.ErrorThumb;
         public Bitmap? Thumbnail {
             get => _thumbnail;
@@ -42,11 +45,23 @@ namespace GhostSpotSharp {
             set => _ptype = value ?? MediaPlaybackType.Unknown;
         }
         public string? Subtitle { get; set; } = null;
-        public GhostProps() {
-        }
+        public GhostProps() { }
         public GhostProps(TCSProperties sesh) {
             Console.WriteLine("GhostProp.InitAsync should be used instead of directly constructing from a TCS object.");
             InitAsync(sesh).GetAwaiter().GetResult();
+        }
+
+        public IEnumerator<KeyValuePair<string, object?>> GetEnumerator() {
+            IEnumerable<PropertyInfo> properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                                       .Where(p => p.CanRead && p.GetIndexParameters().Length == 0);
+
+            foreach (var property in properties) {
+                yield return new KeyValuePair<string, object?>(property.Name, property.GetValue(this));
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
         }
         public async Task InitAsync(TCSProperties sesh) {
             Title = sesh.Title;
@@ -56,7 +71,7 @@ namespace GhostSpotSharp {
             #pragma warning disable IDE0305 // Simplify collection initialization
             Genres = sesh.Genres.ToList();
             #pragma warning restore IDE0305 // Simplify collection initialization
-            Thumbnail = await GhostImg.RefToImage(sesh.Thumbnail);
+            Thumbnail = await GhostImg.RefToThumb(sesh.Thumbnail);
             TrackNumber = sesh.TrackNumber;
             TrackCount = sesh.AlbumTrackCount;
             PlaybackType = sesh.PlaybackType;
