@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Media;
-using TCSProperties = Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties;
 
 namespace GhostSpotSharp {
     internal class GhostProps : IEnumerable<KeyValuePair<string, object?>> {
@@ -39,23 +32,23 @@ namespace GhostSpotSharp {
         }
         public int? TrackNumber { get; set; } = null;
         public int? TrackCount { get; set; } = null;
-        private MediaPlaybackType _ptype = MediaPlaybackType.Unknown;
-        public MediaPlaybackType? PlaybackType {
+        private MPT _ptype = MPT.Unknown;
+        public MPT? PlaybackType {
             get => _ptype;
-            set => _ptype = value ?? MediaPlaybackType.Unknown;
+            set => _ptype = value ?? MPT.Unknown;
         }
         public string? Subtitle { get; set; } = null;
         public GhostProps() { }
         public GhostProps(TCSProperties sesh) {
-            Console.WriteLine("GhostProp.InitAsync should be used instead of directly constructing from a TCS object.");
-            InitAsync(sesh).GetAwaiter().GetResult();
+            WriteLine("GhostProp.InitAsync should be used instead of directly constructing from a TCS object.");
+            Sync(InitAsync(sesh));
         }
 
         public IEnumerator<KeyValuePair<string, object?>> GetEnumerator() {
             IEnumerable<PropertyInfo> properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
                                        .Where(p => p.CanRead && p.GetIndexParameters().Length == 0);
 
-            foreach (var property in properties) {
+            foreach (PropertyInfo property in properties) {
                 yield return new KeyValuePair<string, object?>(property.Name, property.GetValue(this));
             }
         }

@@ -12,6 +12,11 @@
   
   <ItemGroup>
 
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
     <PackageReference Include="runtime.win10-x64.Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.14" />
 
     <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
@@ -42,5 +47,26 @@
     <None Update="Resources\ErrorThumb.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms"/>
+    <!-- Win32 P/Invokes -->
+    <Using Include="Windows.Win32.PInvoke" Alias="PI"/>
+    <Using Include="GhostSpotSharp.PInvoke" Alias="GI"/>
+    <Using Include="System.Runtime.InteropServices"/>
+    <Using Include="Windows.Win32" Alias="W32"/>
+    <!-- SMTC -->
+    <Using Include="Windows.Media.Control.GlobalSystemMediaTransportControlsSession" Alias="TCS"/>
+    <Using Include="Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties" Alias="TCSProperties"/>
+    <Using Include="Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager" Alias="TCSManager"/>
+    <Using Include="Windows.Media.MediaPlaybackType" Alias="MPT"/>
+    <!-- UI -->
+    <Using Include="Windows.UI.Color" Alias="UiColor"/>
+    <Using Include="System.Drawing.Color" Alias="SdColor"/>
+    <!-- This -->
+    <Using Include="GhostSpotSharp"/>
+    <!-- Static -->
+    <Using Include="GhostSpotSharp.Utils" Static="true"/>
+    <Using Include="System.Console" Static="true"/>
   </ItemGroup>
 </Project>  

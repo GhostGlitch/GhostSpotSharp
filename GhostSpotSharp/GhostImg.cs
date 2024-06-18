@@ -1,25 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Storage.Streams;
+﻿using System.IO;
+using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
+using System.Diagnostics;
+using StreamRef = Windows.Storage.Streams.IRandomAccessStreamReference;
+using StreamWContent = Windows.Storage.Streams.IRandomAccessStreamWithContentType;
 
 namespace GhostSpotSharp {
     internal class GhostImg {
-        public static async Task<Bitmap?> RefToThumb(IRandomAccessStreamReference streamRef) {
+        public static async Task<Bitmap?> RefToThumb(StreamRef Ref) {
             Bitmap Img = Resources.ErrorThumb;
-            if (streamRef != null) {
+            if (Ref != null) {
                 try {
-                    using (IRandomAccessStreamWithContentType stream = await streamRef.OpenReadAsync()) {
+                    using (StreamWContent stream = await Ref.OpenReadAsync()) {
                         using (MemoryStream mStream = new()) {
                             await stream.AsStreamForRead().CopyToAsync(mStream);
                             Img = (Bitmap)Image.FromStream(mStream);
                         }
                     }
                 } catch (Exception ex) {
-                    Console.WriteLine(ex.ToString());
+                    WriteLine(ex.ToString());
                 }
             }
             if (Img.Width != 300 || Img.Height != 300) {
@@ -28,13 +27,13 @@ namespace GhostSpotSharp {
             return Img;
         }
         public static Bitmap ResizeToThumb(Bitmap thumb) {
-            Bitmap tmpImg = new(300, 300, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            Bitmap tmpImg = new(300, 300, PixelFormat.Format32bppArgb);
             float scale = Math.Min(300f / thumb.Width, 300f / thumb.Height);
             int newW = (int)(thumb.Width * scale);
             int newH = (int)(thumb.Height * scale);
 
             using (Graphics g = Graphics.FromImage(tmpImg)) {
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.Clear(Color.Transparent);
                 g.DrawImage(thumb, ((300 - newW) / 2), ((300 - newH) / 2), newW, newH);
             }
@@ -43,10 +42,10 @@ namespace GhostSpotSharp {
         public static void DebugViewImage(Image img, string title) {
             using (MemoryStream ms = new()) {
                 if (img != null) {
-                    img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    img.Save(ms, ImageFormat.Png);
                 } else {
-                    Console.WriteLine(title + " NULL THUMB");
-                    Console.Beep();
+                    WriteLine(title + " NULL THUMB");
+                    Beep();
                     return;
                 }
 
@@ -63,7 +62,7 @@ namespace GhostSpotSharp {
                 // Save to tmp and open in browser
                 string htmlFileName = Path.Combine(tempDir, "Ghost-" + title + "-thumb.html");
                 File.WriteAllText(htmlFileName, html);
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(htmlFileName) { UseShellExecute = true });
+                Process.Start(new ProcessStartInfo(htmlFileName) { UseShellExecute = true });
             }
         }
     }
