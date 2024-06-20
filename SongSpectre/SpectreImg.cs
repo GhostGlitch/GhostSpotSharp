@@ -6,7 +6,7 @@ using StreamRef = Windows.Storage.Streams.IRandomAccessStreamReference;
 using StreamWContent = Windows.Storage.Streams.IRandomAccessStreamWithContentType;
 
 namespace SongSpectre {
-    internal class SpectreImg {
+    internal static class SpectreImg {
         public static async Task<Bitmap?> RefToThumb(StreamRef Ref) {
             Bitmap Img = Resources.ErrorThumb;
             if (Ref != null) {
