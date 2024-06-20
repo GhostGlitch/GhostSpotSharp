@@ -55,16 +55,19 @@ namespace SongSpectre {
             }
         }
         public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing) {
             if (hwnd != HWND.Null) {
                 PI.DestroyWindow(hwnd);
                 hwnd = HWND.Null;
             }
             _Instances.Remove(hwnd);
             disposed = true;
-            GC.SuppressFinalize(this);
         }
         ~Toast() {
-            Dispose();
+            Dispose(false);
         }
     }
 }
