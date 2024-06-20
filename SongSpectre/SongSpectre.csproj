@@ -52,7 +52,7 @@
     <Using Remove="System.Windows.Forms"/>
     <!-- Win32 P/Invokes -->
     <Using Include="Windows.Win32.PInvoke" Alias="PI"/>
-    <Using Include="GhostSpotSharp.PInvoke" Alias="GI"/>
+    <Using Include="SongSpectre.PInvoke" Alias="SI"/>
     <Using Include="System.Runtime.InteropServices"/>
     <Using Include="Windows.Win32" Alias="W32"/>
     <!-- SMTC -->
@@ -64,9 +64,9 @@
     <Using Include="Windows.UI.Color" Alias="UiColor"/>
     <Using Include="System.Drawing.Color" Alias="SdColor"/>
     <!-- This -->
-    <Using Include="GhostSpotSharp"/>
+    <Using Include="SongSpectre"/>
     <!-- Static -->
-    <Using Include="GhostSpotSharp.Utils" Static="true"/>
+    <Using Include="SongSpectre.Utils" Static="true"/>
     <Using Include="System.Console" Static="true"/>
   </ItemGroup>
 </Project>  

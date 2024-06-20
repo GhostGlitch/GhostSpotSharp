@@ -1,4 +1,4 @@
-﻿namespace GhostSpotSharp {
+﻿namespace SongSpectre {
     internal static class PInvoke {
         [DllImport("uxtheme.dll", EntryPoint = "#95", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern uint GetImmersiveColorFromColorSetEx(

@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Reflection;
 
-namespace GhostSpotSharp {
-    internal class GhostProps : IEnumerable<KeyValuePair<string, object?>> {
+namespace SongSpectre {
+    internal class SpectreProps : IEnumerable<KeyValuePair<string, object?>> {
 
         private string _title = "Unknown Title";
         public string? Title {
@@ -38,9 +38,9 @@ namespace GhostSpotSharp {
             set => _ptype = value ?? MPT.Unknown;
         }
         public string? Subtitle { get; set; } = null;
-        public GhostProps() { }
-        public GhostProps(TCSProperties sesh) {
-            WriteLine("GhostProp.InitAsync should be used instead of directly constructing from a TCS object.");
+        public SpectreProps() { }
+        public SpectreProps(TCSProperties sesh) {
+            WriteLine("SpectreProps.InitAsync should be used instead of directly constructing from a TCS object.");
             Sync(InitAsync(sesh));
         }
 
@@ -64,7 +64,7 @@ namespace GhostSpotSharp {
             #pragma warning disable IDE0305 // Simplify collection initialization
             Genres = sesh.Genres.ToList();
             #pragma warning restore IDE0305 // Simplify collection initialization
-            Thumbnail = await GhostImg.RefToThumb(sesh.Thumbnail);
+            Thumbnail = await SpectreImg.RefToThumb(sesh.Thumbnail);
             TrackNumber = sesh.TrackNumber;
             TrackCount = sesh.AlbumTrackCount;
             PlaybackType = sesh.PlaybackType;

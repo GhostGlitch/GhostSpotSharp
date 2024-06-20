@@ -1,4 +1,4 @@
-﻿namespace GhostSpotSharp {
+﻿namespace SongSpectre {
     internal class Utils {
         public static R Sync<R>(Task<R> t) {
             return t.GetAwaiter().GetResult();

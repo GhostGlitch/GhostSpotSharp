@@ -5,8 +5,8 @@ using System.Diagnostics;
 using StreamRef = Windows.Storage.Streams.IRandomAccessStreamReference;
 using StreamWContent = Windows.Storage.Streams.IRandomAccessStreamWithContentType;
 
-namespace GhostSpotSharp {
-    internal class GhostImg {
+namespace SongSpectre {
+    internal class SpectreImg {
         public static async Task<Bitmap?> RefToThumb(StreamRef Ref) {
             Bitmap Img = Resources.ErrorThumb;
             if (Ref != null) {
@@ -60,7 +60,7 @@ namespace GhostSpotSharp {
                     Directory.CreateDirectory(tempDir);
                 }
                 // Save to tmp and open in browser
-                string htmlFileName = Path.Combine(tempDir, "Ghost-" + title + "-thumb.html");
+                string htmlFileName = Path.Combine(tempDir, "Spectre-" + title + "-thumb.html");
                 File.WriteAllText(htmlFileName, html);
                 Process.Start(new ProcessStartInfo(htmlFileName) { UseShellExecute = true });
             }

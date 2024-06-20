@@ -8,15 +8,15 @@ using static Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD;
 
 
 
-namespace GhostSpotSharp {
+namespace SongSpectre {
 
     internal unsafe class Test {
         private static (HBRUSH, HBRUSH) GColors() {
             UISettings UISet = new();
             UiColor UiColorBack = UISet.GetColorValue(UIColorType.Background);
-            uint ImerStartBack = GI.GetImmersiveColorFromColorSetEx(
-            (uint)GI.GetImmersiveUserColorSetPreference(false, false),
-            GI.GetImmersiveColorTypeFromName(Marshal.StringToHGlobalUni("StartBackground")),
+            uint ImerStartBack = SI.GetImmersiveColorFromColorSetEx(
+            (uint)SI.GetImmersiveUserColorSetPreference(false, false),
+            SI.GetImmersiveColorTypeFromName(Marshal.StringToHGlobalUni("StartBackground")),
             false, 0);
             return (UIHelpers.ColorToBrush(UiColorBack), UIHelpers.ColorToBrush(ImerStartBack));
         }

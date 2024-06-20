@@ -4,7 +4,7 @@ using Windows.Win32.Graphics.Gdi;
 using static Windows.Win32.UI.WindowsAndMessaging.WINDOW_EX_STYLE;
 using static Windows.Win32.UI.WindowsAndMessaging.WINDOW_STYLE;
 
-namespace GhostSpotSharp {
+namespace SongSpectre {
     internal class Toast : IDisposable {
         public static readonly ushort atom;
         public static readonly WNDCLASSW WndClass;
@@ -14,10 +14,10 @@ namespace GhostSpotSharp {
         private static readonly Dictionary<HWND, Toast> _Instances = [];
 
         static unsafe Toast() {
-            nint ClassNameP = Marshal.StringToHGlobalUni("GhosToast");
+            nint ClassNameP = Marshal.StringToHGlobalUni("SpectralToast");
             WNDCLASSW win = new() {
                 lpszClassName = new PCWSTR((char*)ClassNameP),
-                lpfnWndProc = GhostWinProc,
+                lpfnWndProc = SpecWinProc,
                 hInstance = (HINSTANCE)PI.GetModuleHandle((string?)null).DangerousGetHandle(),
                 hbrBackground = PI.GetSysColorBrush(SYS_COLOR_INDEX.COLOR_BACKGROUND),
                 hCursor = HCURSOR.Null
@@ -41,7 +41,7 @@ namespace GhostSpotSharp {
             Marshal.FreeHGlobal(TitleP);
             _Instances[hwnd] = this;
         }
-        private static LRESULT GhostWinProc(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam) {
+        private static LRESULT SpecWinProc(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam) {
             switch (msg) {
                 case PI.WM_CLOSE:
                     if (_Instances.TryGetValue(hWnd, out Toast? toast)) {

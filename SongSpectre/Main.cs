@@ -14,10 +14,11 @@ Test.Hope();
 
 TCSManager Manager = await TCSManager.RequestAsync();
 IReadOnlyList<TCS> Sessions = Manager.GetSessions();
-Dictionary<TCS, GhostProps> SeshMap = [];
+Dictionary<TCS, SpectreProps
+    > SeshMap = [];
 
 foreach (TCS sesh in Sessions) {
-    GhostProps props = new();
+    SpectreProps props = new();
     try {
         await Task.Run(async () =>
         {
@@ -30,9 +31,9 @@ foreach (TCS sesh in Sessions) {
     }
     SeshMap[sesh] = props;
 }
-foreach (GhostProps props in SeshMap.Values) {
+foreach (SpectreProps props in SeshMap.Values) {
 //#pragma warning disable CS8604 // Possible null reference argument.
-    //GhostImg.DebugViewImage(props.Thumbnail, props.Title);
+    //SpectreImg.DebugViewImage(props.Thumbnail, props.Title);
 //#pragma warning restore CS8604 // Possible null reference argument.
     foreach (KeyValuePair<string, object?> kvp in props) {
         if (kvp.Key == "Genres") {
