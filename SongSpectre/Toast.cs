@@ -62,15 +62,17 @@ namespace SongSpectre {
             GC.SuppressFinalize(this);
         }
         protected virtual void Dispose(bool disposing) {
-            if (hwnd != HWND.Null) {
-                PI.DestroyWindow(hwnd);
-                hwnd = HWND.Null;
+            if (!disposed) {
+                if (hwnd != HWND.Null) {
+                    PI.DestroyWindow(hwnd);
+                    hwnd = HWND.Null;
+                }
+                _Instances.Remove(hwnd);
+                disposed = true;
             }
-            _Instances.Remove(hwnd);
-            disposed = true;
         }
-        ~Toast() {
-            Dispose(false);
+        ~Toast() {   
+                Dispose(false);
         }
     }
 }

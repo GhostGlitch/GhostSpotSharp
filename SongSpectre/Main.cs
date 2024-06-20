@@ -9,9 +9,6 @@ using Windows.Win32.UI.WindowsAndMessaging;
 using Windows.Win32.Foundation;
 
 
-
-Test.Hope();
-
 TCSManager Manager = await TCSManager.RequestAsync();
 IReadOnlyList<TCS> Sessions = Manager.GetSessions();
 Dictionary<TCS, SpectreProps
@@ -38,7 +35,7 @@ foreach (SpectreProps props in SeshMap.Values) {
     foreach (KeyValuePair<string, object?> kvp in props) {
         if (kvp.Key == "Genres") {
             List<string>? genres = (List<string>?)kvp.Value;
-            WriteLine($"Genres: {(genres.Count > 0 ? string.Join(", ", genres) : "")}");
+            WriteLine($"Genres: {(genres?.Count > 0 ? string.Join(", ", genres) : "")}");
         } else if (kvp.Key != "Thumbnail") {
             WriteLine($"{kvp.Key}: {kvp.Value}");
         }
