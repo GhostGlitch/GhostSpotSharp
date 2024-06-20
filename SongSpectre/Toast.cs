@@ -6,14 +6,14 @@ using static Windows.Win32.UI.WindowsAndMessaging.WINDOW_STYLE;
 
 namespace SongSpectre {
     internal class Toast : IDisposable {
-        public static readonly ushort atom;
-        public static readonly WNDCLASSW WndClass;
+        public static readonly WNDCLASSW WndClass = InitWndClass();
+        public static readonly ushort atom = InitAtom(WndClass);
         public HWND hwnd;
 
         private bool disposed = false;
         private static readonly Dictionary<HWND, Toast> _Instances = [];
 
-        static unsafe Toast() {
+        static  unsafe WNDCLASSW InitWndClass() {
             nint ClassNameP = Marshal.StringToHGlobalUni("SpectralToast");
             WNDCLASSW win = new() {
                 lpszClassName = new PCWSTR((char*)ClassNameP),
@@ -22,10 +22,13 @@ namespace SongSpectre {
                 hbrBackground = PI.GetSysColorBrush(SYS_COLOR_INDEX.COLOR_BACKGROUND),
                 hCursor = HCURSOR.Null
             };
-            WndClass = win;
-            atom = PI.RegisterClass(win);
             Marshal.FreeHGlobal(ClassNameP);
+            return win;
         }
+        static unsafe ushort InitAtom(WNDCLASSW win) {
+            return PI.RegisterClass(win);
+        }
+
         public unsafe Toast() {
             nint TitleP = Marshal.StringToHGlobalUni("title");
             hwnd = PI.CreateWindowEx(
