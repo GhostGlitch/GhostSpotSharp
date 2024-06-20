@@ -3,45 +3,53 @@ using Windows.Win32.UI.WindowsAndMessaging;
 using Windows.Win32.Graphics.Gdi;
 using static Windows.Win32.UI.WindowsAndMessaging.WINDOW_EX_STYLE;
 using static Windows.Win32.UI.WindowsAndMessaging.WINDOW_STYLE;
+using Windows.Win32;
 
 namespace SongSpectre {
     internal class Toast : IDisposable {
-        public static readonly WNDCLASSW WndClass = InitWndClass();
-        public static readonly ushort atom = InitAtom(WndClass);
+
+        public static readonly WNDCLASSW WndClass;
+        public static readonly ushort atom;
+        private static readonly FreeLibrarySafeHandle SafeHInstance = PI.GetModuleHandle((string?)null);
         public HWND hwnd;
 
         private bool disposed = false;
         private static readonly Dictionary<HWND, Toast> _Instances = [];
 
-        static  unsafe WNDCLASSW InitWndClass() {
+
+        static unsafe Toast() {
+            if (SafeHInstance.IsInvalid) {
+                throw new InvalidOperationException("hInstance Handle is invalid.");
+            }
             nint ClassNameP = Marshal.StringToHGlobalUni("SpectralToast");
             WNDCLASSW win = new() {
                 lpszClassName = new PCWSTR((char*)ClassNameP),
                 lpfnWndProc = SpecWinProc,
-                hInstance = (HINSTANCE)PI.GetModuleHandle((string?)null).DangerousGetHandle(),
+                hInstance = (HINSTANCE)SafeHInstance.DangerousGetHandle(),
                 hbrBackground = PI.GetSysColorBrush(SYS_COLOR_INDEX.COLOR_BACKGROUND),
                 hCursor = HCURSOR.Null
             };
+            WndClass = win;
+            atom = PI.RegisterClass(win);
+            if (atom == 0) {
+                throw new Exception("Window class registration failed.");
+            }
             Marshal.FreeHGlobal(ClassNameP);
-            return win;
         }
-        static unsafe ushort InitAtom(WNDCLASSW win) {
-            return PI.RegisterClass(win);
-        }
-
+        
         public unsafe Toast() {
-            nint TitleP = Marshal.StringToHGlobalUni("title");
+            if (SafeHInstance.IsInvalid) {
+                throw new InvalidOperationException("hInstance Handle is invalid.");
+            }
             hwnd = PI.CreateWindowEx(
-                WS_EX_TOPMOST | WS_EX_TRANSPARENT| 
+                WS_EX_TOPMOST | WS_EX_TRANSPARENT |
                 WS_EX_LAYERED | WS_EX_NOACTIVATE,
-                WndClass.lpszClassName,
-                new PCWSTR((char*)TitleP),
+                new string((char*)WndClass.lpszClassName), "title",
                 WS_POPUP,
                 PI.CW_USEDEFAULT, PI.CW_USEDEFAULT,
-                300, 200,
-                HWND.Null, HMENU.Null,
-                WndClass.hInstance );
-            Marshal.FreeHGlobal(TitleP);
+                300, 200, 
+                HWND.Null, null, 
+                SafeHInstance, null);
             _Instances[hwnd] = this;
         }
         private static LRESULT SpecWinProc(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam) {
